@@ -1,0 +1,11 @@
+#!/bin/bash
+#
+# $Id: dot-bash_profile 47 2011-04-05 18:26:01Z egypt $
+#
+
+source ~/.bashrc
+
+# rvm-install added line:
+if [[ -s /home/egypt/.rvm/scripts/rvm ]] ; then source /home/egypt/.rvm/scripts/rvm ; fi
+
+[[ -s "$HOME/.rvm/scripts/rvm" ]] && source "$HOME/.rvm/scripts/rvm" # Load RVM into a shell session *as a function*

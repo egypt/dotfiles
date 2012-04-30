@@ -1,0 +1,239 @@
+#!/bin/bash
+#
+# $Id: dot-bashrc 51 2011-11-02 09:30:07Z egypt $
+#
+# This file is sourced by all *interactive* bash shells on startup,
+# including some apparently interactive shells such as scp and rcp
+# that can't tolerate any output.
+
+# Test for an interactive shell.  There is no need to set anything
+# past this point for scp and rcp, and it's important to refrain from
+# outputting anything in those cases.
+#if [[ $- != '*i*' ]]; then
+# Old versions of bash (e.g. 2.05b) don't have an equivalent to this syntax.
+# Take the performance hit of spawning a few processes to work around it.  It
+# was probably slow anyway... right?
+if $(echo $- | grep -vq 'i'); then
+    # Shell is non-interactive.  Be done now
+    return
+fi
+
+# bail if we tried to use an unset variable
+#set -o nounset
+
+# allow typos in arguments to cd
+shopt -s cdspell
+
+# immediate notification of background job termination
+set -b
+
+alias rdesktop="rdesktop -u Administrator"
+
+# Assume that if common utilities return true for -L (i.e. they are symbolic
+# links) then this is a busyboxy system and don't use anything fancy
+test ! -L /bin/ls           && alias ls='ls -F --color=auto'
+test -e /usr/bin/gnome-open && alias open='gnome-open'
+
+# typo and utility aliases
+alias cd..='cd ..'
+# I find I don't really use these much since ^D is always faster
+alias :q='exit'
+alias :qa='exit'
+alias l='ls'
+alias sl='ls'
+alias ll='ls -lh'
+alias la='ll -a'
+alias lsd='ls -d */.'
+alias lld='ll -d */.'
+alias l.="ls -d .[^.]*"
+alias iv=vi
+# Makes sure that ctrl-alt-backspace doesn't give someone a shell
+alias startx='exec startx'
+# -i is really annoying
+alias rm='rm -f'
+alias grep='grep --exclude-dir=.svn'
+alias egrep='egrep --exclude-dir=.svn'
+
+alias vn='svn'
+alias vsn='svn'
+alias snv='svn'
+alias svnkeywords='svn propset svn:keywords "Rev Revision Id Header"'
+alias gi='git'
+
+function up {
+    if [ -d ".svn" ]; then
+        svn up --ignore-externals $@
+    else
+        stash=$(git stash save)
+        git fetch origin
+        git pull -r $@
+        [ "$stash" != "No local changes to save" ] && git stash pop
+    fi
+    date
+}; export -f up
+
+function git-add-remote {
+    git remote add $1 git://github.com/$1/metasploit-framework
+    git fetch $1
+    git branch --track $1 $1/master
+}; export -f git-add-remote
+
+function parse_git_branch {
+  git branch --no-color 2> /dev/null | sed -e '/^[^*]/d' -e 's/* \(.*\)/:\1/'
+}
+
+
+# So I don't have to add it to the path
+test -x ~/CMake/bin/cmake && alias cmake=~/CMake/bin/cmake
+
+if test ! -L /usr/bin/which; then
+    # this no worky on busybox
+    function which () {
+        (alias; declare -f) | /usr/bin/which \
+            --tty-only --read-functions \
+            --read-alias --show-dot --show-tilde $@
+    }
+    export -f which
+fi
+
+# I'm still looking for a way to do this on old versions of bash that do
+# not have [[ or =~.
+if [[ ! "$PATH" =~ "~/bin" && ! "$PATH" =~ "$HOME/bin" ]]; then
+    export PATH=$HOME/bin:$PATH
+fi
+if [[ ! $PATH =~ "/sbin/" ]]; then
+    export PATH=$PATH:/sbin/:/usr/sbin/
+fi
+export HISTCONTROL="ignoredups"
+export MANPAGER="less"
+export PAGER="less"
+export EDITOR="vi"
+export VISUAL="vi"
+
+# colors for ls, etc.  Prefer ~/.dir_colors
+if test -f ~/.dir_colors; then
+    eval `dircolors -b ~/.dir_colors`
+elif test -f /etc/DIR_COLORS; then
+    eval `dircolors -b /etc/DIR_COLORS`
+fi
+
+# Set up a nice window title
+case $TERM in
+    xterm*|rxvt*|Eterm)
+        BEGIN_TITLE="\[\033]0;"
+        END_TITLE="\007\]"
+        TITLE_BAR="${BEGIN_TITLE}\u@\h \w${END_TITLE}"
+        ;;
+    screen*)
+        # <esc><underbar>
+        BEGIN_TITLE="\[\033\137"
+        # <esc><backslash>
+        END_TITLE="\033\134\]"
+        # screen uses this escape sequence to tell when a line contains a
+        # prompt for purposes of determining what command is being executed.
+        # <esc><k><esc><backslash>
+        MARK_PROMPT="\[\033k\033\134\]"
+        TITLE_BAR="${BEGIN_TITLE}\u@\h (screen) \w${END_TITLE}${MARK_PROMPT}"
+        ;;
+    *)
+        TITLE_BAR=''
+        ;;
+esac
+
+function prompt_func () {
+    local status=$?
+
+    local COLOR_BLACK="\[\e[00;30m\]"
+    local COLOR_BLUE_BOLD="\[\e[34;1m\]"
+    local COLOR_BLUE="\[\e[01;34m\]"
+    local COLOR_BROWN="\[\e[00;33m\]"
+    local COLOR_CYAN_BOLD="\[\e[36;1m\]"
+    local COLOR_CYAN="\[\e[00;36m\]"
+    local COLOR_FOREST="\[\e[00;32m\]"
+    local COLOR_GRAY="\[\e[00;37m\]"
+    local COLOR_GREEN_BOLD="\[\e[32;1m\]"
+    local COLOR_GREEN="\[\e[01;32m\]"
+    local COLOR_MAGENTA_BOLD="\[\e[35;1m\]"
+    local COLOR_MAGENTA="\[\e[00;35m\]"
+    local COLOR_NAVY="\[\e[00;34m\]"
+    local COLOR_RED_BOLD="\[\e[31;1m\]"
+    local COLOR_RED="\[\e[00;31m\]"
+    local COLOR_WHITE="\[\e[01;37m\]"
+    local COLOR_YELLOW_BOLD="\[\e[33;1m\]"
+    local COLOR_YELLOW="\[\e[00;33m\]"
+
+    local NONE="\[\e[0m\]"
+
+    if test 0 -eq $EUID; then
+        PS1="${COLOR_RED_BOLD}\u"
+    else
+        PS1="${COLOR_FOREST}\u"
+    fi
+    # If we're on a remote connection, color the host differently, otherwise
+    # don't bother with the hostname
+    if test -n "$SSH_CLIENT" -o -n "$SSH_CONNECTION"; then
+        PS1="${PS1}@${COLOR_CYAN_BOLD}\h "
+    else
+        PS1="${PS1} "
+    fi
+
+    # Working directory
+    PS1="${PS1}${COLOR_CYAN}\W"
+
+    # Add the current git branch if there is one
+    PS1="${PS1}${COLOR_GREEN}$(parse_git_branch)${NONE} "
+
+    # Add the return code from the last command
+    if test 0 -ne $status; then
+        PS1="${PS1}${COLOR_RED_BOLD}($status) "
+    fi
+
+    PS1="${PS1}${COLOR_NAVY}\\$ ${NONE}"
+
+    # Change the window title of X terminals
+    if test -n "${TITLE_BAR}"; then
+        PS1="${PS1}${TITLE_BAR}"
+    fi
+    export PS1
+}
+export -f prompt_func
+export PROMPT_COMMAND='prompt_func'
+
+export RAILS_ENV='development'
+
+#
+#  cdiff: coloured diff format
+#
+#  Paul Warren <pdw@ex-parrot.com>
+#  12/01/2001
+#
+
+#  colour for added lines (bright yellow)
+diffnew=`tput setf 6``tput bold`
+
+#  colour for removed lines (bright red)
+diffold=`tput setf 4``tput bold`
+
+#  colour for unchanged lines (bright black, aka dark grey)
+diffsame=`tput setf 0``tput bold`
+
+#  reset - original pair, unset all attributes
+reset=`tput op``tput sgr0`
+
+alias cdiff="diff --changed-group-format='%<%>'  \
+	--new-group-format='%>' \
+	--old-group-format='%<' \
+	--new-line-format='${diffnew}+ %l$reset' \
+	--old-line-format='${diffold}- %l$reset' \
+	--unchanged-line-format='${diffsame}  %l${reset}
+' "
+
+
+# The bash completion packages sometimes don't fail gracefully.  Put them at
+# the end to prevent them from screwing up the rest of our configuration.
+test -f /etc/profile.d/bash-completion && source /etc/profile.d/bash-completion
+test -f /etc/bash_completion && source /etc/bash_completion
+
+
+[[ -s "$HOME/.rvm/scripts/rvm" ]] && source "$HOME/.rvm/scripts/rvm" # Load RVM into a shell session *as a function*
+

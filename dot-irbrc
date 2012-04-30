@@ -1,0 +1,155 @@
+
+puts "Loaded ~/.irbrc"
+begin
+	msf = nil
+	# Add msf library path
+	paths = [ "~/repo/metasploit-framework/lib", ]
+	paths.each do |path|
+		msf = File.expand_path(path)
+		break if File.directory?(msf)
+	end
+	#unless File.directory?(msf)
+	#	Dir.glob("/opt/metasploit-*/msf3/lib").each do |path|
+	#		msf = path
+	#		break if File.directory?(msf)
+	#	end
+	#end
+	$:.unshift(msf) if msf
+	require 'rex'
+rescue LoadError
+end
+
+# Easily print methods local to an object's class
+class Object
+	def local_methods
+		(methods - Object.instance_methods).sort
+	end
+end
+
+begin
+	# load libraries
+	require 'rubygems'
+	require 'wirble'
+	# start wirble (with color)
+	Wirble.init
+	Wirble.colorize
+rescue
+	# Mock it if it failed to load
+	class Wirble
+	class Colorize
+		def self.colorize_string(str, color)
+			str
+		end
+	end
+	end
+end
+
+begin
+	require 'ori'
+	ORI.conf.color = true
+rescue LoadError
+end
+
+begin
+	require 'hirb'
+	Hirb::Formatter.dynamic_config['ActiveRecord::Base']
+	Hirb::View.disable
+	# No worky
+	#Hirb::View.enable(:output => {
+	#		'Msf::SessionManager' => {
+	#			:class => 'Hirb::Helpers::AutoTable',
+	#			:options => { :fields => %w{ type tunnel_peer info } }
+	#		},
+	#		"Msf::Session" => {
+	#			:class => 'Hirb::Helpers::AutoTable',
+	#			:options=> { :fields => %w{type tunnel_peer info}}
+	#		},
+	#	})
+rescue LoadError
+end
+
+# Custom pretty print certain obj types
+#
+# String: print length, content type and up to 128 bytes of inspect
+# Fixnum/BigNum: also print out the hex and binary values
+#
+module IRB
+class Irb
+	alias_method :old_output_value, :output_value
+	def output_value
+		if @context.inspect?
+			case @context.last_value
+			when Fixnum, Bignum
+				if (@context.last_value < 127 && @context.last_value > 0)
+					fmt = "%d (0x%08x) (0b%b) \"%c\""
+					line = fmt%([@context.last_value] * 4)
+				else
+					fmt = "%d (0x%08x) (0b%b)"
+					line = fmt%([@context.last_value] * 3)
+				end
+				printf @context.return_format, Wirble::Colorize.colorize_string(line,:cyan)
+			when String
+				lv = @context.last_value
+				if lv.length > 10
+					begin
+						# yes, this spawns a shell command after every IRB eval. 
+						# fast enough for %99.99 of stuff
+						f = IO.popen("file -","w+")
+						f.write(lv)
+					rescue
+					ensure 
+						f.flush
+						f.close_write
+						fileout = f.read.gsub("/dev/stdin: ",'').chomp
+					end
+				end
+				ins = lv[0,128]
+				if lv.length > 128
+					ins += "..."
+				end
+				str = ""
+				str << Wirble::Colorize.colorize_string("=> length: ",:white)
+				str << Wirble::Colorize.colorize_string(lv.length.to_s,:red)
+				str << "\n"
+				if (fileout)
+					str << Wirble::Colorize.colorize_string("=> content: ",:white)
+					str << Wirble::Colorize.colorize_string(fileout,:red)
+					str << "\n"
+				end
+				case lv.length
+				when 1
+					str << Wirble::Colorize.colorize_string("=> 8-bit int: ",:white)
+					str << Wirble::Colorize.colorize_string(lv.unpack("C").first,:red)
+					str << "\n"
+				when 2
+					str << Wirble::Colorize.colorize_string("=> 16-bit int: ",:white)
+					str << Wirble::Colorize.colorize_string(lv.unpack("v").first,:red)
+					str << " le "
+					str << Wirble::Colorize.colorize_string(lv.unpack("n").first,:red)
+					str << " be"
+					str << "\n"
+				when 4
+					str << Wirble::Colorize.colorize_string("=> 32-bit int: ",:white)
+					str << Wirble::Colorize.colorize_string(lv.unpack("V").first,:red)
+					str << " le "
+					str << Wirble::Colorize.colorize_string(lv.unpack("N").first,:red)
+					str << " be"
+					str << "\n"
+				end
+				str << " => "
+				str << Wirble::Colorize.colorize_string(ins.inspect,:cyan)
+				str << "\n"
+				printf "%s",str
+			else
+				#printf @context.return_format, @context.last_value.inspect
+				old_output_value
+			end
+		else
+			#printf @context.return_format, @context.last_value
+			old_output_value
+		end
+	end
+end
+end
+
+

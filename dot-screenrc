@@ -1,0 +1,43 @@
+# file: .screenrc
+#
+# $Id: dot-screenrc 34 2008-11-20 06:54:18Z egypt $
+#
+
+activity       "*** ACTIVITY IN %n (%t) [%w:%s]~ ***"-
+# if screen dies, detach so our session will remain
+autodetach      on     # Default on
+deflogin        on
+defscrollback   4096   # Default 100
+# I hate control sequences
+escape          ``
+msgwait         3
+setenv DISPLAY  ':0'
+shelltitle      "$ |bash"
+# when monitoring for silence, how long should screen wait before notifying?
+silencewait     15     # Default 30
+startup_message off
+vbell           on
+vbell_msg       " Ding! "
+
+caption always "%{gk}[ %{g}%H %{g}][%= %{wk}%?%-Lw%?%{r}(%{w}%n*%f %t%?(%u)%?%{r})%{w}%?%+Lw%?%?%= %{g}][%{b} %Y-%m-%d %{w}%c %{g}]"
+
+# "` shift-r" gets a root shell with current environment whose title is the
+# current running command or just #
+bind R screen -t '# |# ' su
+
+# [ hostname ][ 0-$ window (1*$ current window) ][ YYYY-mm-dd HH:ss ]
+caption always "%{gk}[ %{g}%H %{g}][%= %{wk}%?%-Lw%?%{r}(%{w}%n*%f %t%?(%u)%?%{r})%{w}%?%+Lw%?%?%= %{g}][%{b} %Y-%m-%d %{w}%c %{g}]"
+
+# allows screen to use aterm's (or rxvt's) title bar for messages
+termcapinfo rxvt 'hs:ts=\E]2;:fs=\007:ds=\E]2;screen\007'
+
+bind 1 select 0
+bind 2 select 1
+bind 3 select 2
+bind 4 select 3
+bind 5 select 4
+bind 6 select 5
+bind 7 select 6
+bind 8 select 7
+bind 9 select 8
+

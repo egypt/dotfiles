@@ -1,0 +1,9 @@
+$if Bash
+    Space: magic-space
+$endif
+set completion-ignore-case on
+set visible-stats on
+
+"\M-s": menu-complete
+"\e[A": history-search-backward
+"\e[B": history-search-forward

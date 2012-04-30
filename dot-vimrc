@@ -1,0 +1,124 @@
+" file: .vimrc
+" some useful additions found at:
+"   * http://www.jauu.net/data/dotfiles/vimrc.asc
+"   * http://www.stripey.com/vim/vimrc.html
+"   * http://www.twoevils.org/files/.vimrc
+"
+" $Id: dot-vimrc 40 2009-05-31 20:26:53Z egypt $
+"
+
+filetype plugin indent on
+call pathogen#infect()
+
+set nocompatible       " vi < vim
+"set nohls              " don't highlight searches
+
+set ignorecase         " make searches case-insensitive ...
+set smartcase          " ... unless they contain an uppercase character
+set tabstop=2 softtabstop=2 shiftwidth=2 shiftround smarttab expandtab
+
+set autoindent         " indent to the same level as the previous line
+
+set nomodeline         " modelines could be dangerous, don't allow them
+set laststatus=2       " always show the status line
+set matchpairs+=<:>
+hi MatchParen ctermbg=black ctermfg=green
+
+" minimal but informative status line
+"set rulerformat=%l/%L(%p%%)\ c%c
+
+"set statusline=%<%f%=\ [%1*%M%*%n%R%H%Y]\ \ %-25(%3l,%c%03V\ \ %P\ (%L)%)%12o'%03b''%03B'
+" do i really need to know what vim thinks the filetype is?
+set statusline=%f\ %m%r%=%-16('\\x%02B'\ \ %y%)%3l/%L\ (%P),c%c
+
+" Mappings
+" ========
+set pastetoggle=<f12>
+
+" I never use F1 for help.  I really meant to hit escape, thanks.
+map <F1> <ESC>
+map! <F1> <ESC>
+" Make spacebar behave like in less
+" This can be annoying
+nmap <Space> <PageDown>
+" make Y behave similarly to C and D rather than cc and dd (which is already
+" covered by yy).  This should be the default behavior
+nmap Y y$
+" have the Tab key insert a tab in front of all selected lines in visual mode
+vmap <Tab> >
+vmap <S-Tab> <LT>
+" Make <ctrl> + w in insert mode do what i meant (change split windows)
+inoremap <C-W> <ESC><C-W>
+
+" I thought these were going to be much handier than they turned out to be.
+" It seems I don't really need to insert time and datestamps in files very
+" often.
+"iab _TIME        <C-R>=strftime("%T")<CR>
+"iab _DATE        <C-R>=strftime("%a %b %d %T %Z %Y")<CR>
+"iab _DATES       <C-R>=strftime("%b %d %Y")<CR>
+
+"imap <F2> _TIME
+"imap <F3> _DATE
+"imap <F4> _DATES
+"nmap <F2> i_TIME<ESC>
+"nmap <F3> i_DATE<ESC>
+"nmap <F4> i_DATES<ESC>=
+
+" Convert lines of hex bytes into escaped strings, e.g.:
+"   00 01 02
+" becomes
+"   "\x00\x01\x02"
+" This is handy when developing shellcode and working with hex dumps
+nmap <F5> 0i :s/\s*$//:s/ \+/\\x/gi"A"==j
+
+" make <enter> insert a newline in normal mode
+" This might get annoying
+nmap <CR> o<ESC>:w<CR>
+
+" close braces automatically
+" This can be annoying, especially when pasting code; might help to ``:set
+" paste'' before pasting and ``:set nopaste'' afterward
+" Use <f12> (the pastetoggle key, set above) to do it more easily.
+imap {<CR> {<CR>}<UP><ESC>A<CR>
+
+
+if !exists("au_loaded")
+    let au_loaded = 1
+    au Filetype text set tw=78 et noautoindent nocindent nosmartindent wrap
+    au Filetype make,automake set noexpandtab
+    augroup rb
+        au Filetype ruby set noet
+        " Highlight trailing whitespace, mixed spaces and tabs, and spaces at
+        " beginning of line to catch bad indents.
+        au FileType ruby hi BogusWhitespace ctermbg=darkgreen guibg=darkgreen
+        au FileType ruby match BogusWhitespace /\s\+$\|\t\+ \+\| \+\t\+\|^ \+/
+            " this comment tests the above    
+        " foo	  	asdf
+    augroup END
+    augroup c
+        au Filetype c,cpp set noet cindent smartindent autoindent
+        au Filetype c,cpp iab #i #include
+        au Filetype c,cpp iab #d #define
+    augroup END
+endif
+
+hi Comment ctermfg=darkcyan
+" I can't see blue on a black background. make #defines readable
+hi PreProc ctermfg=darkcyan
+
+
+"set foldmethod=indent
+"set foldnestmax=1
+set fillchars=fold:\ 
+let b:simplefold_nestable_start_expr = ''
+" Colors!
+highlight Folded ctermbg=none ctermfg=grey
+highlight FoldColumn ctermbg=white ctermfg=black
+
+filetype plugin on
+"source $VIM/vim71/macros/matchit.vim
+
+if has("mouse")
+    set mousehide
+endif
+
