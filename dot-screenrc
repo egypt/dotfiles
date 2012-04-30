@@ -1,7 +1,5 @@
 # file: .screenrc
 #
-# $Id: dot-screenrc 34 2008-11-20 06:54:18Z egypt $
-#
 
 activity       "*** ACTIVITY IN %n (%t) [%w:%s]~ ***"-
 # if screen dies, detach so our session will remain

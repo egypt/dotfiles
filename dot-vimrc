@@ -4,8 +4,6 @@
 "   * http://www.stripey.com/vim/vimrc.html
 "   * http://www.twoevils.org/files/.vimrc
 "
-" $Id: dot-vimrc 40 2009-05-31 20:26:53Z egypt $
-"
 
 filetype plugin indent on
 call pathogen#infect()
