@@ -1,7 +1,5 @@
 #!/bin/bash
 #
-# $Id: dot-bash_logout 10 2007-05-12 04:22:53Z egypt $
-#
 # This file is sourced when a login shell terminates.
 # Clear the screen for security's sake.
 tput clear

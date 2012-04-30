@@ -1,7 +1,5 @@
 #!/bin/bash
 #
-# $Id: dot-bash_profile 47 2011-04-05 18:26:01Z egypt $
-#
 
 source ~/.bashrc
 
