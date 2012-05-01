@@ -77,7 +77,7 @@ function git-add-remote {
 }; export -f git-add-remote
 
 function parse_git_branch {
-  git branch --no-color 2> /dev/null | sed -e '/^[^*]/d' -e 's/* \(.*\)/:\1/'
+  git branch --no-color 2> /dev/null | sed -e '/^[^*]/d' -e 's/* \(.*\)/\1/'
 }
 
 
@@ -179,7 +179,11 @@ function prompt_func () {
     PS1="${PS1}${COLOR_CYAN}\W"
 
     # Add the current git branch if there is one
-    PS1="${PS1}${COLOR_GREEN}$(parse_git_branch)${NONE} "
+    branch=$(parse_git_branch)
+    if [ -n "$branch" ]; then
+      PS1="${PS1}${NONE}:${COLOR_GREEN}${branch}${NONE}"
+    fi
+    PS1="${PS1} "
 
     # Add the return code from the last command
     if test 0 -ne $status; then
