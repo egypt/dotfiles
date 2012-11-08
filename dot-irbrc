@@ -109,18 +109,26 @@ class Irb
 					str << Wirble::Colorize.colorize_string(lv.unpack("C").first,:red)
 					str << "\n"
 				when 2
-					str << Wirble::Colorize.colorize_string("=> 16-bit int: ",:white)
+					str << Wirble::Colorize.colorize_string("=> 16-bit int le: ",:white)
+					str << Wirble::Colorize.colorize_string(hex_le(lv),:red)
+					str << " "
 					str << Wirble::Colorize.colorize_string(lv.unpack("v").first,:red)
-					str << " le "
+					str << "\n"
+					str << Wirble::Colorize.colorize_string("=> 16-bit int be: ",:white)
+					str << Wirble::Colorize.colorize_string(hex_be(lv),:red)
+					str << " "
 					str << Wirble::Colorize.colorize_string(lv.unpack("n").first,:red)
-					str << " be"
 					str << "\n"
 				when 4
-					str << Wirble::Colorize.colorize_string("=> 32-bit int: ",:white)
+					str << Wirble::Colorize.colorize_string("=> 32-bit int: le ",:white)
+					str << Wirble::Colorize.colorize_string(hex_le(lv),:red)
+					str << " "
 					str << Wirble::Colorize.colorize_string(lv.unpack("V").first,:red)
-					str << " le "
+					str << "\n"
+					str << Wirble::Colorize.colorize_string("=> 32-bit int: be ",:white)
+					str << Wirble::Colorize.colorize_string(hex_be(lv),:red)
+					str << " "
 					str << Wirble::Colorize.colorize_string(lv.unpack("N").first,:red)
-					str << " be"
 					str << "\n"
 				end
 				str << " => "
@@ -135,6 +143,18 @@ class Irb
 			#printf @context.return_format, @context.last_value
 			old_output_value
 		end
+	end
+
+	def hex_be(str)
+		# Always 4 bytes here. With a 2-byte string, the join will drop our
+		# empties.
+		"0x" + str.unpack("H2"*4).join
+	end
+
+	def hex_le(str)
+		# Always 4 bytes here. With a 2-byte string, the join will drop our
+		# empties.
+		"0x" + str.unpack("H2"*4).reverse.join
 	end
 end
 end
