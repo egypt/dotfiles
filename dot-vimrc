@@ -5,6 +5,7 @@
 "   * http://www.twoevils.org/files/.vimrc
 "
 
+"let ruby_fold = 1
 filetype plugin indent on
 call pathogen#infect()
 

@@ -9,12 +9,6 @@ begin
 		msf = File.expand_path(path)
 		break if File.directory?(msf)
 	end
-	#unless File.directory?(msf)
-	#	Dir.glob("/opt/metasploit-*/msf3/lib").each do |path|
-	#		msf = path
-	#		break if File.directory?(msf)
-	#	end
-	#end
 	$:.unshift(msf) if msf
 	require 'rex'
 rescue LoadError
@@ -28,8 +22,12 @@ class Object
 end
 
 begin
-	# load libraries
 	require 'rubygems'
+rescue LoadError
+end
+
+begin
+	# load libraries
 	require 'wirble'
 	# start wirble (with color)
 	Wirble.init
@@ -46,28 +44,16 @@ rescue
 end
 
 begin
+	require 'pry'
+rescue LoadError
+end
+
+begin
 	require 'ori'
 	ORI.conf.color = true
 rescue LoadError
 end
 
-begin
-	require 'hirb'
-	Hirb::Formatter.dynamic_config['ActiveRecord::Base']
-	Hirb::View.disable
-	# No worky
-	#Hirb::View.enable(:output => {
-	#		'Msf::SessionManager' => {
-	#			:class => 'Hirb::Helpers::AutoTable',
-	#			:options => { :fields => %w{ type tunnel_peer info } }
-	#		},
-	#		"Msf::Session" => {
-	#			:class => 'Hirb::Helpers::AutoTable',
-	#			:options=> { :fields => %w{type tunnel_peer info}}
-	#		},
-	#	})
-rescue LoadError
-end
 
 # Custom pretty print certain obj types
 #
@@ -93,12 +79,12 @@ class Irb
 				lv = @context.last_value
 				if lv.length > 10
 					begin
-						# yes, this spawns a shell command after every IRB eval. 
+						# yes, this spawns a shell command after every IRB eval.
 						# fast enough for %99.99 of stuff
 						f = IO.popen("file -","w+")
 						f.write(lv)
 					rescue
-					ensure 
+					ensure
 						f.flush
 						f.close_write
 						fileout = f.read.gsub("/dev/stdin: ",'').chomp
