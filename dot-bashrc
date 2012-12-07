@@ -49,8 +49,8 @@ alias iv=vi
 alias startx='exec startx'
 # -i is really annoying
 alias rm='rm -f'
-alias grep='grep --exclude-dir=.svn'
-alias egrep='egrep --exclude-dir=.svn'
+
+export GREP_OPTIONS="--exclude-dir=.svn --color"
 
 alias vn='svn'
 alias vsn='svn'
