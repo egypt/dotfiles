@@ -11,7 +11,7 @@ for target in $dir/*; do
     if [[ $(basename $target) != $(basename $0) ]]; then
         linkname="$(basename ${target/dot-/.})"
         # if it already exists (as a regular file, not a link), make a backup
-        if [ -f "~/$linkname" ]; then 
+        if [ -f "~/$linkname" ]; then
             mkdir -p ~/config-backup/
             echo "mv ~/$linkname ~/config-backup/$linkname"
             mv "~/$linkname" "~/config-backup/$linkname"
