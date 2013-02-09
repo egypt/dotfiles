@@ -26,8 +26,16 @@ bind R screen -t '# |# ' su
 # [ hostname ][ 0-$ window (1*$ current window) ][ YYYY-mm-dd HH:ss ]
 caption always "%{gk}[ %{g}%H %{g}][%= %{wk}%?%-Lw%?%{r}(%{w}%n*%f %t%?(%u)%?%{r})%{w}%?%+Lw%?%?%= %{g}][%{b} %Y-%m-%d %{w}%c %{g}]"
 
+# Make bold mean bright
+attrcolor b ".I"
+# Make the default on new windows to remove all characters on erase (gets rid
+# of bold, etc)
+defbce "on"
+
 # allows screen to use aterm's (or rxvt's) title bar for messages
 termcapinfo rxvt 'hs:ts=\E]2;:fs=\007:ds=\E]2;screen\007'
+# allows screen to use 256 colors on xterm (actually gnome-terminal)
+termcapinfo xterm 'Co#256:AB=\E[48;5;%dm:AF=\E[38;5;%dm'
 
 bind 1 select 0
 bind 2 select 1
