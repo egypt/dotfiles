@@ -1,9 +1,4 @@
 " file: .vimrc
-" some useful additions found at:
-"   * http://www.jauu.net/data/dotfiles/vimrc.asc
-"   * http://www.stripey.com/vim/vimrc.html
-"   * http://www.twoevils.org/files/.vimrc
-"
 
 "let ruby_fold = 1
 filetype plugin indent on
@@ -93,11 +88,13 @@ map <C-l> <C-W>l
 " becomes
 "   "\x00\x01\x02"
 " This is handy when developing shellcode and working with hex dumps
-nmap <F5> 0i :s/\s*$//:s/ \+/\\x/gi"A"==j
+nmap <F5> 0i :s/\s*$//\n:s/ \+/\\x/g\ni"A"==j
 
 " make <enter> insert a newline in normal mode
 " This might get annoying
 nmap <CR> o<ESC>:w<CR>
+
+00 11 22
 
 " close braces automatically
 " This can be annoying, especially when pasting code; might help to ``:set
@@ -173,3 +170,9 @@ if has("mouse")
     set mousehide
 endif
 
+" some useful additions found at:
+"   * http://www.jauu.net/data/dotfiles/vimrc.asc
+"   * http://www.stripey.com/vim/vimrc.html
+"   * http://www.twoevils.org/files/.vimrc
+"   * https://github.com/sdavies/dotfiles/blob/master/.vimrc
+"   * https://github.com/ahawthorne/.dotfiles/blob/master/.vimrc
