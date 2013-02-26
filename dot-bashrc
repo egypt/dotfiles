@@ -62,6 +62,8 @@ alias gti='git'
 alias mtrunc=":> ~/.msf4/logs/framework.log && tail -fn0 ~/.msf4/logs/framework.log | egrep --color -i 'call stack|exception|$'"
 alias mtail="tail -fn0 ~/.msf4/logs/framework.log | egrep --color -i 'call stack|exception|$'"
 
+function mcd() { mkdir -p "$1";cd "$1"; }; export -f mcd
+
 function up {
     if [ -d ".svn" ]; then
         echo svn up --ignore-externals $@
