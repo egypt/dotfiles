@@ -80,18 +80,6 @@ function up {
     date
 }; export -f up
 
-function git_add_remote {
-    if [ -z "$1" ]; then
-        echo "Need a remote to add, you ninny"
-        return 1
-    fi
-    echo git remote add $1 git://github.com/$1/metasploit-framework
-    git remote add $1 git://github.com/$1/metasploit-framework
-    echo git fetch $1
-    git fetch $1
-    echo "Now run something like 'git branch --track $1 $1/master'"
-}; export -f git_add_remote
-
 function parse_git_branch {
   git branch --no-color 2> /dev/null | sed -e '/^[^*]/d' -e 's/* \(.*\)/\1/'
 }
@@ -114,7 +102,7 @@ fi
 if [[ ! $PATH =~ "/sbin/" ]]; then
     export PATH=$PATH:/sbin/:/usr/sbin/
 fi
-export HISTCONTROL="ignoredups"
+export HISTCONTROL="ignoredups:ignorespace"
 export MANPAGER="less"
 export PAGER="less"
 export EDITOR="vi"
@@ -247,7 +235,6 @@ alias cdiff="diff --changed-group-format='%<%>'  \
 # the end to prevent them from screwing up the rest of our configuration.
 test -f /etc/profile.d/bash-completion && source /etc/profile.d/bash-completion
 test -f /etc/bash_completion && source /etc/bash_completion
-
 
 [[ -s "$HOME/.rvm/scripts/rvm" ]] && source "$HOME/.rvm/scripts/rvm" # Load RVM into a shell session *as a function*
 
