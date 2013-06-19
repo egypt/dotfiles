@@ -1,0 +1,35 @@
+[include]
+  path = ~/.githubconfig
+[user]
+  name = James Lee
+  email = egypt@metasploit.com
+
+[push]
+  default = current
+
+[alias]
+  branch-current = rev-parse --abbrev-ref HEAD
+  ci = commit
+  co = checkout
+  st = status
+  stat = status
+  lol = log --date=iso --graph --pretty=format:'%C(red)%h%C(reset) -%C(yellow)%d%C(reset) %s %C(green)(%cd) %C(bold blue)<%an>%C(reset)' --abbrev-commit
+  pr-url =!"echo https://github.com/jlee-r7/metasploit-framework/pull/new/$1:$2...$(git branch-current) #"
+  land = !"git checkout rapid7/pr/$1 && git checkout -b landing-$1-$2 #"
+
+[color]
+  ui = true
+[color "diff"]
+  whitespace = red reverse
+[color "branch"]
+  current = yellow reverse
+  local = yellow
+  remote = green
+
+[core]
+  whitespace = fix,-indent-with-non-tab,trailing-space,cr-at-eol,space-before-tab
+  autocrlf = false
+
+[status]
+  showUntrackedFiles = no
+
