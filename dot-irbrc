@@ -1,15 +1,19 @@
 #!/usr/bin/env ruby
 
 puts "Loaded ~/.irbrc"
+
+msf = nil
+# Add msf library path
+paths = [ "~/repo/metasploit-framework/lib", ]
+paths.each do |path|
+	msf = File.expand_path(path)
+	break if File.directory?(msf)
+end
+if msf
+	$:.unshift(msf) unless $:.include?(msf)
+end
+
 begin
-	msf = nil
-	# Add msf library path
-	paths = [ "~/repo/metasploit-framework/lib", ]
-	paths.each do |path|
-		msf = File.expand_path(path)
-		break if File.directory?(msf)
-	end
-	$:.unshift(msf) if msf
 	require 'rex'
 rescue LoadError
 end
@@ -45,12 +49,6 @@ end
 
 begin
 	require 'pry'
-rescue LoadError
-end
-
-begin
-	require 'ori'
-	ORI.conf.color = true
 rescue LoadError
 end
 

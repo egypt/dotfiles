@@ -73,8 +73,8 @@ function up {
         [ "$stash" != "No local changes to save" ] && echo Stashed changes
         echo git fetch
         git fetch
-        echo git pull $@
-        git pull $@
+        echo git pull --ff-only $@
+        git pull --ff-only $@
         [ "$stash" != "No local changes to save" ] && git stash pop
     fi
     date
@@ -236,5 +236,6 @@ alias cdiff="diff --changed-group-format='%<%>'  \
 test -f /etc/profile.d/bash-completion && source /etc/profile.d/bash-completion
 test -f /etc/bash_completion && source /etc/bash_completion
 
+export rvmsudo_secure_path=1
 [[ -s "$HOME/.rvm/scripts/rvm" ]] && source "$HOME/.rvm/scripts/rvm" # Load RVM into a shell session *as a function*
 

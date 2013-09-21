@@ -1,0 +1,3 @@
+[submodule "dot-janus/vim-airline"]
+	path = dot-janus/vim-airline
+	url = git@github.com:bling/vim-airline.git

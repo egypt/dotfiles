@@ -1,5 +1,9 @@
 " file: .vimrc
 
+" Enable 256 color support. This won't work everywhere, but it works
+" everywhere I usually have shells.
+set t_Co=256
+
 "let ruby_fold = 1
 filetype plugin indent on
 "call pathogen#infect()
@@ -20,28 +24,32 @@ hi MatchParen ctermbg=black ctermfg=green
 " minimal but informative status line
 "set rulerformat=%l/%L(%p%%)\ c%c
 
-if has("statusline")
-  set laststatus=2       " always show the status line
+let g:airline_left_sep = '▶'
+let g:airline_right_sep = '◀'
 
-  "set statusline=%<%f%=\ [%1*%M%*%n%R%H%Y]\ \ %-25(%3l,%c%03V\ \ %P\ (%L)%)%12o'%03b''%03B'
-  set statusline=%f
-
-  " Add syntastic if enabled
-  "if janus#is_plugin_enabled('syntastic')
-    set statusline+=%#warningmsg#
-    set statusline+=%{SyntasticStatuslineFlag()}
-    set statusline+=%*
-  "endif
-
-  set statusline+=%4m    " modified?
-  set statusline+=%r     " read only?
-  set statusline+=%=     " begin right section
-  set statusline+=%-7('\\x%02B'%) " Hex value of byte under cursor
-  set statusline+=%y     " filetype
-  set statusline+=%3l/%L " current line / end line
-  set statusline+=(%P),  " Percentage of file
-  set statusline+=c%c    " column
-endif
+" Replaced by airline (https://github.com/bling/vim-airline)
+"if has("statusline")
+"  set laststatus=2       " always show the status line
+"
+"  "set statusline=%<%f%=\ [%1*%M%*%n%R%H%Y]\ \ %-25(%3l,%c%03V\ \ %P\ (%L)%)%12o'%03b''%03B'
+"  set statusline=%f
+"
+"  " Add syntastic if enabled
+"  "if janus#is_plugin_enabled('syntastic')
+"    set statusline+=%#warningmsg#
+"    set statusline+=%{SyntasticStatuslineFlag()}
+"    set statusline+=%*
+"  "endif
+"
+"  set statusline+=%4m    " modified?
+"  set statusline+=%r     " read only?
+"  set statusline+=%=     " begin right section
+"  set statusline+=%-7('\\x%02B'%) " Hex value of byte under cursor
+"  set statusline+=%y     " filetype
+"  set statusline+=%3l/%L " current line / end line
+"  set statusline+=(%P),  " Percentage of file
+"  set statusline+=c%c    " column
+"endif
 
 " Mappings
 " ========
@@ -117,8 +125,6 @@ if !exists("au_loaded")
         " beginning of line to catch bad indents.
         au FileType ruby hi BogusWhitespace ctermbg=darkgreen guibg=darkgreen
         au FileType ruby match BogusWhitespace /\s\+$\|\t\+ \+\| \+\t\+/
-        au BufNewFile,BufRead *metasploit-framework/*.rb set noexpandtab
-        au BufNewFile,BufRead *modules/*.rb set noexpandtab
     augroup END
     augroup c
         au Filetype c,cpp set noet cindent smartindent autoindent
