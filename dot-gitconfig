@@ -15,8 +15,9 @@
   stat = status
   lol = log --date=iso --graph --pretty=format:'%C(red)%h%C(reset) -%C(yellow)%d%C(reset) %s %C(green)(%cd) %C(bold blue)<%an>%C(reset)' --abbrev-commit
   pr-url =!"echo https://github.com/jlee-r7/metasploit-framework/pull/new/$1:$2...$(git branch-current) #"
-  land = !"git checkout rapid7/pr/$1 && git checkout -b landing-$1-$2 #"
+  land = !"git checkout upstream/pr/$1 && git checkout -b land-$1-$2 #"
   m = merge -S --no-ff --edit
+  publish = push upstream upstream-master:master
 
 [color]
   ui = true
