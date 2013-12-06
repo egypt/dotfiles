@@ -104,7 +104,8 @@ if [[ ! $PATH =~ "/sbin/" ]]; then
 fi
 export HISTCONTROL="ignoredups:ignorespace"
 export MANPAGER="less"
-export PAGER="less"
+export RI="-f ansi"
+export PAGER="less -R"
 export EDITOR="vi"
 export VISUAL="vi"
 
