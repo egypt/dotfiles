@@ -8,6 +8,7 @@
   default = current
 
 [alias]
+  sign-rebase = !"GIT_SEQUENCE_EDITOR='sed -i s/^pick/e/' sh -c 'git rebase -i $1 && while test -f .git/rebase-merge/interactive; do git commit -S --amend --no-edit --no-verify && git rebase --continue; done' -"
   bv = branch -vv
   branch-current = rev-parse --abbrev-ref HEAD
   ci = commit -S --edit
@@ -15,12 +16,15 @@
   co = checkout
   st = status
   stat = status
+  nicelog = log --pretty=format:'[%G?] %Cred%h%Creset -%Creset %s %Cgreen(%cr) %C(bold blue)<%an>%Creset'
+  mergelog = log --merges --pretty=format:'[%G?] %Cred%h %p%Creset -%Creset %s %Cgreen(%cr) %C(bold blue)<%an>%Creset'
   lol = log --date=iso --graph --pretty=format:'%G? %C(red)%h%C(reset) %C(green)(%cd) %C(reset)-%C(yellow)%d%C(reset) %s %C(bold blue)<%an>%C(reset)' --abbrev-commit
   pr-url =!"echo https://github.com/jlee-r7/metasploit-framework/pull/new/$1:$2...$(git branch-current) #"
   tryland = !"git checkout upstream/pr/$1 2>/dev/null && git checkout -b land-$1-$2 #"
-  land = !"git checkout upstream-master && git m upstream/pr/$1 -em\"Land #$1, \"  #"
+  land = !"git checkout upstream/master && git m upstream/pr/$1 -em\"Land #$1, \"  #"
   m = merge -S --no-ff --edit
   publish = push upstream upstream-master:master
+  rlsnotes = !"git nicelog --first-parent $1...$2 | sed -r \"s:\\x1B\\[[0-9;]*[mK]::g\" | cut -f 2-99 -d '-' | sort -n | grep -i ' Land' | sed s:Land:PR:g #  #"
 
 [color]
   ui = true
@@ -35,8 +39,13 @@
   whitespace = fix,-indent-with-non-tab,trailing-space,cr-at-eol,space-before-tab
   autocrlf = false
 
+[commit]
+  gpgsign = true
+
 [status]
   showUntrackedFiles = no
 
 [commit]
 	gpgsign = true
+[mailmap]
+	file = ~/.mailmap
