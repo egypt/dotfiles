@@ -151,12 +151,18 @@ if !exists("au_loaded")
         au FileType ruby match BogusWhitespace /\s\+$\|\t\+ \+\| \+\t\+/
     augroup END
     augroup py
-        au Filetype python set noet cindent smartindent autoindent
+        au Filetype python set expandtab cindent smartindent autoindent
+        au Filetype python set tabstop=4 softtabstop=4 shiftwidth=4 shiftround
     augroup END
     augroup c
         au Filetype c,cpp set noet cindent smartindent autoindent
+        au Filetype c,cpp set tabstop=4 softtabstop=4 shiftwidth=4 shiftround
         au Filetype c,cpp iab #i #include
         au Filetype c,cpp iab #d #define
+    augroup END
+    augroup ps1
+        au Filetype ps1,psm set expandtab cindent smartindent autoindent
+        au Filetype ps1,psm set tabstop=4 softtabstop=4 shiftwidth=4 shiftround
     augroup END
 endif
 
