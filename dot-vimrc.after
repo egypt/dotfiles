@@ -94,6 +94,10 @@ vmap <S-Tab> <LT>
 
 " Make <ctrl> + w in insert mode do what i meant (change split windows)
 inoremap <C-W> <ESC><C-W>
+
+" Make my normal tic to visually find my cursor drop out of insert mode
+imap jkj <ESC>
+
 "ctrl-hjkl switches windows
 map <C-j> <C-W>j
 map <C-k> <C-W>k
