@@ -25,7 +25,10 @@ shopt -s cdspell
 # immediate notification of background job termination
 set -b
 
+export DOTNET_CLI_TELEMETRY_OPTOUT=1
+
 alias rdesktop="rdesktop -u Administrator"
+alias fuck='sudo $(history -p \!\!)'
 
 # Assume that if common utilities return true for -L (i.e. they are symbolic
 # links) then this is a busyboxy system and don't use anything fancy
@@ -50,12 +53,8 @@ alias startx='exec startx'
 # -i is really annoying
 alias rm='rm -f'
 
-export GREP_OPTIONS="--exclude-dir=.svn --color"
+alias grep="grep --color"
 
-alias vn='svn'
-alias vsn='svn'
-alias snv='svn'
-alias svnkeywords='svn propset svn:keywords "Rev Revision Id Header"'
 alias gi='git'
 alias gti='git'
 
@@ -63,22 +62,6 @@ alias mtrunc=":> ~/.msf4/logs/framework.log && tail -fn0 ~/.msf4/logs/framework.
 alias mtail="tail -fn0 ~/.msf4/logs/framework.log | egrep --color -i 'call stack|exception|$'"
 
 function mcd() { mkdir -p "$1";cd "$1"; }; export -f mcd
-
-function up {
-    if [ -d ".svn" ]; then
-        echo svn up --ignore-externals $@
-        svn up --ignore-externals $@
-    else
-        stash=$(git stash save)
-        [ "$stash" != "No local changes to save" ] && echo Stashed changes
-        echo git fetch
-        git fetch
-        echo git pull --ff-only $@
-        git pull --ff-only $@
-        [ "$stash" != "No local changes to save" ] && git stash pop
-    fi
-    date
-}; export -f up
 
 function parse_git_branch {
   git branch --no-color 2> /dev/null | sed -e '/^[^*]/d' -e 's/* \(.*\)/\1/'
@@ -96,12 +79,18 @@ fi
 
 # I'm still looking for a way to do this on old versions of bash that do
 # not have [[ or =~.
-if [[ ! "$PATH" =~ "~/bin" && ! "$PATH" =~ "$HOME/bin" ]]; then
-    export PATH=$HOME/bin:$PATH
-fi
-if [[ ! $PATH =~ "/sbin/" ]]; then
-    export PATH=$PATH:/sbin/:/usr/sbin/
-fi
+
+function append_to_path {
+  if [[ -d "$1"  &&  ! "$PATH" =~ "$1" ]]; then
+    export PATH=$PATH:$1
+  fi
+
+}
+
+append_to_path "$HOME/.local/bin"
+append_to_path /sbin
+append_to_path /usr/sbin
+
 export HISTCONTROL="ignoredups:ignorespace"
 export MANPAGER="less"
 export RI="-f ansi"
@@ -232,6 +221,8 @@ alias cdiff="diff --changed-group-format='%<%>'  \
 ' "
 
 
+test -f ~/.gitrob_token && source ~/.gitrob_token
+
 # The bash completion packages sometimes don't fail gracefully.  Put them at
 # the end to prevent them from screwing up the rest of our configuration.
 test -f /etc/profile.d/bash-completion && source /etc/profile.d/bash-completion
@@ -240,3 +231,4 @@ test -f /etc/bash_completion && source /etc/bash_completion
 export rvmsudo_secure_path=1
 [[ -s "$HOME/.rvm/scripts/rvm" ]] && source "$HOME/.rvm/scripts/rvm" # Load RVM into a shell session *as a function*
 
+true
