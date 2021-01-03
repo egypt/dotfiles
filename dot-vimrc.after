@@ -158,6 +158,10 @@ if !exists("au_loaded")
         au Filetype python set expandtab cindent smartindent autoindent
         au Filetype python set tabstop=4 softtabstop=4 shiftwidth=4 shiftround
     augroup END
+    augroup go
+        au Filetype go set noet cindent smartindent autoindent
+        au Filetype go set tabstop=4 softtabstop=4 shiftwidth=4 shiftround
+    augroup END
     augroup c
         au Filetype c,cpp set noet cindent smartindent autoindent
         au Filetype c,cpp set tabstop=4 softtabstop=4 shiftwidth=4 shiftround
@@ -192,7 +196,8 @@ function! KillWhitey()
   call Preserve("%s/\\s\\+$//e")
 endfunction
 
-colorscheme anotherdark
+colorscheme inkpot
+"colorscheme anotherdark
 "colorscheme darkZ
 "colorscheme desert
 set background=dark
