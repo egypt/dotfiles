@@ -7,13 +7,16 @@
 [push]
   default = current
 
+[pull]
+  ff = only
+
 [alias]
   branch-current = rev-parse --abbrev-ref HEAD
   bv = branch -vv
   c = commit -S --edit
   ci = commit -S --edit
   co = checkout
-  land = !"git checkout upstream/master && git m upstream/pr/$1 -em\"Land #$1, \"  #"
+  land = !"git checkout upstream/master && git m upstream/pull/$1 -em\"Land #$1, \"  #"
   lol = log --date=iso --graph --pretty=format:'%G? %C(red)%h%C(reset) %C(green)(%cd) %C(reset)-%C(yellow)%d%C(reset) %s %C(bold blue)<%an>%C(reset)' --abbrev-commit
   mergelog = log --merges --pretty=format:'[%G?] %Cred%h %p%Creset -%Creset %s %Cgreen(%cr) %C(bold blue)<%an>%Creset'
   m = merge -S --no-ff --edit
@@ -24,6 +27,7 @@
   sign-rebase = !"GIT_SEQUENCE_EDITOR='sed -i s/^pick/e/' sh -c 'git rebase -i $1 && while test -f .git/rebase-merge/interactive; do git commit -S --amend --no-edit --no-verify && git rebase --continue; done' -"
   stat = status
   st = status
+  stu = status -u
   tryland = !"git checkout upstream/pr/$1 2>/dev/null && git checkout -b land-$1-$2 #"
 
 [color]
@@ -39,13 +43,8 @@
   whitespace = fix,-indent-with-non-tab,trailing-space,cr-at-eol,space-before-tab
   autocrlf = false
 
-[commit]
-  gpgsign = true
-
 [status]
   showUntrackedFiles = no
 
-[commit]
-	gpgsign = true
 [mailmap]
-	file = ~/.mailmap
+  file = ~/.mailmap

@@ -64,7 +64,7 @@ class Irb
 	def output_value
 		if @context.inspect?
 			case @context.last_value
-			when Fixnum, Bignum
+			when Numeric
 				if (@context.last_value < 127 && @context.last_value > 0)
 					fmt = "%d (0x%08x) (0b%b) \"%c\""
 					line = fmt%([@context.last_value] * 4)

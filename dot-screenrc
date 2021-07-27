@@ -7,7 +7,7 @@ autodetach      on     # Default on
 deflogin        on
 defscrollback   4096   # Default 100
 # I hate control sequences
-escape          ``
+#escape          ``
 msgwait         3
 setenv DISPLAY  ':0'
 shelltitle      "$ |bash"

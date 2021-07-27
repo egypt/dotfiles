@@ -2,8 +2,7 @@ $if Bash
     Space: magic-space
 $endif
 set completion-ignore-case on
-set visible-stats on
 
-"\M-s": menu-complete
+# Use <up> and <down> to search based on what we've already typed
 "\e[A": history-search-backward
 "\e[B": history-search-forward
